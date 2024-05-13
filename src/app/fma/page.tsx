@@ -1,6 +1,11 @@
 "use client"
 
 import { Card } from "@/components/ui/card";
+import {Select,
+        SelectContent,
+        SelectItem,
+        SelectTrigger,
+        SelectValue, } from "@/components/ui/select";
 import { useState, useEffect, ChangeEvent } from "react";
 
 export default function force(){
@@ -117,11 +122,32 @@ export default function force(){
                 <div className="flex flex-col w-100 gap-2 justify-center">
                     <div className="flex flex-col">
                         <label>Mass: </label>
-                        <input type="text" className="border-b-2 border-black" onChange={(e) => setMassValue(e)} value={mass}></input>
+                        <div className="flex flex-row gap-5">
+                            <input type="text" className="border-b-2 border-black" onChange={(e) => setMassValue(e)} value={mass}></input>
+                            <Select>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {massUnits.map((x, i) => <SelectItem value={(x.value).toString()} key = {i+`m`}>{x.label}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
+
                     <div className="flex flex-col">
                         <label>Acceleration: </label>
-                        <input type="text" className="border-b-2 border-black" onChange={(e) => setAccValue(e)} value={acceleration}></input>
+                        <div className="flex flex-row gap-5">
+                            <input type="text" className="border-b-2 border-black" onChange={(e) => setAccValue(e)} value={acceleration}></input>
+                            <Select onValueChange={(e) => console.log(e)}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Unit" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {accelerationUnits.map((x, i) => <SelectItem value={(x.value).toString()} key={i+`a`}>{x.label}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                     <div className="flex flex-col">
                         <label>Force: </label>
