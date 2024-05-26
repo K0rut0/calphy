@@ -210,7 +210,7 @@ export default function force(){
                 </div>
             </Card>
             <div className="flex flex-col gap-5 max-w-[500px]">
-                {latexText.map((e, i) => <KaTeX texExpression={e} className="flex max-w-[500px] h-fit" key={i+`-katextComp`}></KaTeX>)}
+                {latexText.map((e, i) => <KaTeX texExpression={e} className="flex max-w-[500px] h-auto" key={i+`-katextComp`}></KaTeX>)}
             </div>
         </div>
     )
