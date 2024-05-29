@@ -1,13 +1,20 @@
 "use client"
 
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {Select,
         SelectContent,
         SelectItem,
         SelectTrigger,
         SelectValue, } from "@/components/ui/select";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import { useState, useEffect, ChangeEvent } from "react";
 import KaTeX from "@/components/custom/KaTeX";
+import { Label } from "@/components/ui/label";
 export default function force(){
     const massUnits = [
         {label: "kg", value: 1},
@@ -32,6 +39,9 @@ export default function force(){
     const [lastChanges, setLastChanges] = useState<string[]>([])
     const [massUnit, setMassUnit] = useState("1")
     const [accUnit, setAccUnit] = useState("1")
+    const [mAns, setMAns] = useState(false)
+    const [aAns, setAAns] = useState(false)
+    const [fAns, setFAns] = useState(false)
     const [latexText, setLatexText] = useState<string[]>([])
     function setMassValue(e : ChangeEvent<HTMLInputElement>){
         if(e.target == null){
@@ -104,6 +114,9 @@ export default function force(){
     }
     
     function calculate(){
+        setAAns(false)
+        setFAns(false)
+        setMAns(false)
         console.log(mass)
         console.log(acceleration)
         console.log(force)
@@ -112,7 +125,7 @@ export default function force(){
         let kg = mass
         let acc = acceleration
         if(massUnit != "1" || accUnit != "1"){
-            temp.push(String.raw`\text{First we convert the units to the proper ones, which are kilograms, meters per second squared in order to get the unit of Newtons} \\`)
+            temp.push(String.raw`\text{First we convert the units to the proper ones, which are}\\ \text{kilograms, meters per second squared in order to get} \\ \text{the unit of Newtons} \\`)
             if(massUnit == "2"){
                 kg = lbToKg(mass)
                 let lbText = String.raw`\text{Converting the mass of lbs into kilograms: }\\ \text{ }\\ ${mass}lbs \text{ x } \frac{1 kg}{2.20462 lbs}`
@@ -143,7 +156,7 @@ export default function force(){
             
         }
         if(!lastChanges.includes("m")){
-            let fLine = String.raw`\text{Since the unit missing is the mass (last two modified parameters were acceleration and force), we first need to transpose the acceleration onto the left side of the equation} \\`
+            let fLine = String.raw`\text{Since the unit missing is the mass (last two modified}\\ \text{parameters were acceleration and force), we first need to transpose} \\ \text{the acceleration onto the left side of the equation} \\`
             let scLine = String.raw`\text{Given: }\\ F = ma \\`
             let thLine = String.raw`\\${force}kgm/s^2 \text{ or } N \text{ } = m(${acc}m/s^2)\\`
             let frLine = String.raw`\\ \frac{${force}kg}{${acc}} = m`
@@ -157,27 +170,54 @@ export default function force(){
             let fiLine = String.raw`\text{To which the final result is: }\\m = ${n}kg`
             temp.push(fiLine)
             setMass(n)
+            setMAns(true)
         }
         if(!lastChanges.includes("a")){
+            let fLine = String.raw`\text{Since the unit missing is the acceleration (last two modified}\\ \text{parameters were mass and force), we first need to transpose} \\ \text{the mass onto the left side of the equation} \\`
+            let scLine = String.raw`\text{Given: }\\ F = ma \\`
+            let thLine = String.raw`\\${force}kgm/s^2 \text{ or } N \text{ } = ${kg}kg(a))\\`
+            let frLine = String.raw`\\ \frac{${force}m/^2}{${kg}} = a`
+            
+            temp.push(fLine)
+            temp.push(scLine)
+            temp.push(thLine)
+            temp.push(frLine)
             let n = force/kg
+            let fiLine = String.raw`\text{To which the final result is: }\\a = ${n}m/s^2`
+            temp.push(fiLine)
             setAcceleration(n)
-        
+            setAAns(true)
         }
         if(!lastChanges.includes("f")){
-            let n = kg*acc
-            setForce(n)
+            let fLine = String.raw`\text{Since the unit missing is the force (last two modified}\\ \text{parameters were mass and acceleration), we only need} \\ \text{to do direct substitution} \\`
+            let scLine = String.raw`\text{Given: }\\ F = ma \\`
+            let thLine = String.raw`\\F = ${kg}kg(${acc}m/s^2)\\`
+            
+            temp.push(fLine)
+            temp.push(scLine)
+            temp.push(thLine)
 
+
+            let n = kg*acc
+            let fiLine = String.raw`\text{To which the final result is: }\\F = ${n}N`
+            temp.push(fiLine)
+            setForce(n)
+            setFAns(true)
         }
         setLatexText(temp)
     }
     return(
-        <div className="w-100 align-middle justify-center p-5 flex flex-col">
-            <Card className="flex w-[600px] h-[300px] border-black flex-col justify-center p-5 ">
+        <div className="w-100 justify-center  p-5 flex flex-col gap-5 items-center min-h-[95vh] h-auto bg-lightgreenish">
+            <Card className="flex w-auto h-auto border-black flex-col justify-center p-5 items-center">
+                <CardHeader>
+                    <CardTitle>Force Calculator</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center gap-y-5">
                 <div className="flex flex-col w-100 gap-2 justify-center">
                     <div className="flex flex-col">
                         <label>Mass: </label>
                         <div className="flex flex-row gap-5">
-                            <input type="text" className="border-b-2 border-black" onChange={(e) => setMassValue(e)} value={mass}></input>
+                            <input type="text" className={`border-b-2 border-black ` + (mAns ? "bg-green-200":"bg-none")} onChange={(e) => setMassValue(e)} value={mass}></input>
                             <Select onValueChange={(e: string) => setMassUnit(e)}>
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder="Mass Unit" />
@@ -191,7 +231,7 @@ export default function force(){
                     <div className="flex flex-col">
                         <label>Acceleration: </label>
                         <div className="flex flex-row gap-5">
-                            <input type="text" className="border-b-2 border-black" onChange={(e) => setAccValue(e)} value={acceleration}></input>
+                            <input type="text" className={`border-b-2 border-black ` + (aAns ? "bg-green-200":"bg-none")} onChange={(e) => setAccValue(e)} value={acceleration}></input>
                             <Select onValueChange={(e) => setAccUnit(e)}>
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder=" Acceleration Unit" />
@@ -202,16 +242,32 @@ export default function force(){
                             </Select>
                         </div>
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-3">
                         <label>Force: </label>
-                        <input type="text" className="border-b-2 border-black" disabled={disable} onChange={(e) => setForceValue(e)} value={force}></input>
+                        <div className="flex flex-row gap-x-5">
+                            <input type="text" className={`border-b-2 border-black ` + (fAns ? "bg-green-200":"bg-none")} disabled={disable} onChange={(e) => setForceValue(e)} value={force}></input>
+                            <Label className="text-xl">N</Label>
+                        </div>
                     </div>
-                    <button className="border-solid rounded-sm border border-black w-[100px]" onClick={calculate}>Calculate</button>
+                    
                 </div>
+                <div className="flex flex-row gap-5">
+                        <button className="border-solid rounded-sm border border-black w-[100px]" onClick={()=>window.location.reload()}>Reset</button>
+                        <button className="border-solid rounded-sm border border-black w-[100px]" onClick={calculate}>Calculate</button>
+                    </div>
+                </CardContent>
             </Card>
-            <div className="flex flex-col gap-5 max-w-[500px]">
-                {latexText.map((e, i) => <KaTeX texExpression={e} className="flex max-w-[500px] h-auto" key={i+`-katextComp`}></KaTeX>)}
-            </div>
+            
+            <Accordion type="single" collapsible className="flex max-w-[500px] w-auto border-solid border-gray-500 border-2 rounded-xl p-2">
+                <AccordionItem value="item-1">
+                    <AccordionTrigger>Click here to show solution</AccordionTrigger>
+                    <AccordionContent>
+                        <div className="flex flex-col gap-5 max-w-[500px]">
+                            {latexText.map((e, i) => <KaTeX texExpression={e} className="flex max-w-[500px] h-auto text-wrap" key={i+`-katextComp`}></KaTeX>)}
+                        </div>
+                    </AccordionContent>
+                </AccordionItem>
+            </Accordion>
         </div>
     )
 }
