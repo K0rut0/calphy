@@ -360,7 +360,7 @@ export default function force(){
                     <div className="flex flex-col">
                         <Label>Combined Momentum: </Label>
                         <div className="flex flex-row gap-5">
-                            <input type="text" className={`border-b-2 border-black ` + (momAns ? "bg-green-200":"bg-none")} disabled={disable} onChange={(e) => setMomentumValue(e)} value={momentum}></input>
+                            <input type="text" className={`border-b-2 border-black ` + (momAns ? "bg-green-200":"bg-none")} disabled={true} onChange={(e) => setMomentumValue(e)} value={momentum}></input>
                             <Label>kgm/s</Label>
                         </div>
                     </div>
