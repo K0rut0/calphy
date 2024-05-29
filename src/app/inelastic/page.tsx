@@ -17,7 +17,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import KaTeX from "@/components/custom/KaTeX";
 import { Label } from "@/components/ui/label";
 import { parse } from "path";
-export default function force(){
+export default function Inelastic(){
     const massUnits = [
         {label: "kg", value: 1},
         {label: "lbs", value: 2},

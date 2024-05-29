@@ -15,7 +15,7 @@ import {
 import { useState, useEffect, ChangeEvent } from "react";
 import KaTeX from "@/components/custom/KaTeX";
 import { Label } from "@/components/ui/label";
-export default function force(){
+export default function Force(){
     const massUnits = [
         {label: "kg", value: 1},
         {label: "lbs", value: 2},

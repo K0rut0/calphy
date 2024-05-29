@@ -13,13 +13,11 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { useRouter } from "next/navigation";
 import { useState, useEffect, ChangeEvent } from "react";
 import KaTeX from "@/components/custom/KaTeX";
 import { Label } from "@/components/ui/label";
 import { parse } from "path";
-export default function force(){
-    const router = useRouter()
+export default function Elastic(){
     const massUnits = [
         {label: "kg", value: 1},
         {label: "lbs", value: 2},
